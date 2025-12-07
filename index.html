@@ -163,6 +163,15 @@
             background: #229954;
         }
 
+        .btn-template {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-template:hover {
+            background: #7f8c8d;
+        }
+
         .btn-excel {
             background: #16a085;
             color: white;
@@ -486,6 +495,7 @@
 
                     <div class="button-group">
                         <button class="btn-add" onclick="openAddModal()">➕ 업체 추가</button>
+                        <button class="btn-template" onclick="downloadTemplate()">📋 엑셀 양식</button>
                         <button class="btn-excel" onclick="document.getElementById('excelInput').click()">📁 엑셀 가져오기</button>
                         <button class="btn-export" onclick="exportToExcel()">💾 엑셀 내보내기</button>
                         <button class="btn-reset" onclick="resetFilter()">🔄 전체보기</button>
@@ -936,6 +946,22 @@
             });
 
             updateVendorList(filtered);
+        }
+
+        // 엑셀 양식 다운로드
+        function downloadTemplate() {
+            const currentTab = tabSettings.find(t => t.id === currentTabId);
+            
+            // 빈 양식 (헤더만)
+            let csv = '업체명,전화번호,주소,담당지역,메모\n';
+            
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${currentTab.name}_양식.csv`;
+            link.click();
+            
+            alert('엑셀 양식을 다운로드했습니다!\n\n양식에 맞춰 작성 후 "엑셀 가져오기"로 업로드하세요.');
         }
 
         // 엑셀 내보내기
