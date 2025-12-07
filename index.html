@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="다이소 유지보수 업체 관리 시스템">
+    <meta name="description" content="업체 관리 시스템">
     <meta name="theme-color" content="#2196f3">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="다이소 업체관리">
+    <meta name="apple-mobile-web-app-title" content="업체관리">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%232196f3'/%3E%3Ctext x='100' y='120' font-size='100' text-anchor='middle' fill='white' font-family='Arial'%3E🏪%3C/text%3E%3C/svg%3E">
-    <title>다이소 유지보수 업체 관리</title>
+    <title>업체 관리 시스템</title>
     <style>
         * {
             margin: 0;
@@ -30,10 +30,32 @@
             padding: 20px;
         }
 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         h1 {
             color: #333;
-            margin-bottom: 20px;
             text-align: center;
+            flex: 1;
+        }
+
+        .btn-settings {
+            padding: 10px 20px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-settings:hover {
+            background: #5a6268;
         }
 
         .main-layout {
@@ -53,10 +75,12 @@
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
         }
 
         .tab {
             flex: 1;
+            min-width: 150px;
             padding: 15px 20px;
             border: none;
             background: #e0e0e0;
@@ -73,14 +97,10 @@
         }
 
         .tab.active {
-            background: #0066cc;
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-
-        .tab.active.cooperation { background: #e74c3c; }
-        .tab.active.autodoor { background: #3498db; }
-        .tab.active.awning { background: #2ecc71; }
-        .tab.active.blind { background: #f39c12; }
 
         .controls {
             background: white;
@@ -297,7 +317,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 10px;
             border: 2px solid #ddd;
@@ -308,6 +329,31 @@
         .form-group textarea {
             min-height: 80px;
             resize: vertical;
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #333;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
         .modal-buttons {
@@ -363,9 +409,56 @@
             margin-bottom: 20px;
         }
 
+        .tab-list {
+            margin-bottom: 20px;
+        }
+
+        .tab-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .tab-item-info {
+            flex: 1;
+        }
+
+        .tab-item-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .tab-item-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .tab-item-actions {
+            display: flex;
+            gap: 5px;
+        }
+
         @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
             .tabs {
                 flex-direction: column;
+            }
+
+            .tab {
+                min-width: auto;
             }
 
             .search-box {
@@ -376,17 +469,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🏪 다이소 유지보수 업체 관리 시스템</h1>
+        <div class="header">
+            <h1>🏪 업체 관리 시스템</h1>
+            <button class="btn-settings" onclick="openSettingsModal()">⚙️ 탭 설정</button>
+        </div>
 
         <div class="main-layout">
-            <!-- 컨텐츠 섹션 -->
             <div class="content-section">
-                <div class="tabs">
-                    <button class="tab active cooperation" data-type="cooperation">협력업체</button>
-                    <button class="tab autodoor" data-type="autodoor">자동문 업체</button>
-                    <button class="tab awning" data-type="awning">어닝 업체</button>
-                    <button class="tab blind" data-type="blind">블라인드 업체</button>
-                </div>
+                <div class="tabs" id="tabsContainer"></div>
 
                 <div class="controls">
                     <div class="search-box">
@@ -405,12 +495,46 @@
 
                 <div class="vendor-list">
                     <h3>
-                        <span id="listTitle">협력업체 목록</span>
+                        <span id="listTitle">업체 목록</span>
                         <span class="vendor-count" id="vendorCount">0개</span>
                     </h3>
                     <div id="vendorListContainer"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- 탭 설정 모달 -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <h2>⚙️ 탭 설정</h2>
+            <div class="tab-list" id="tabSettingsList"></div>
+            <button class="btn-add" onclick="openTabModal()">➕ 새 탭 추가</button>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="btn-cancel" onclick="closeSettingsModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 탭 추가/수정 모달 -->
+    <div class="modal" id="tabModal">
+        <div class="modal-content">
+            <h2 id="tabModalTitle">탭 추가</h2>
+            <form id="tabForm">
+                <div class="form-group">
+                    <label>탭 이름 *</label>
+                    <input type="text" id="tabName" required placeholder="예: 협력업체, 자동문 업체">
+                </div>
+                <div class="form-group">
+                    <label>탭 색상</label>
+                    <div class="color-picker" id="colorPicker"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">저장</button>
+                    <button type="button" class="btn-cancel" onclick="closeTabModal()">취소</button>
+                    <button type="button" class="btn-delete" id="deleteTabBtn" style="display:none;" onclick="deleteTab()">삭제</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -449,62 +573,94 @@
     </div>
 
     <script>
-        let vendors = {
-            cooperation: [],
-            autodoor: [],
-            awning: [],
-            blind: []
-        };
-        let currentType = 'cooperation';
+        // 기본 색상 팔레트
+        const colorPalette = [
+            '#e74c3c', '#3498db', '#2ecc71', '#f39c12', 
+            '#9b59b6', '#1abc9c', '#e67e22', '#34495e',
+            '#c0392b', '#2980b9', '#27ae60', '#f1c40f',
+            '#8e44ad', '#16a085', '#d35400', '#2c3e50'
+        ];
+
+        // 기본 탭 설정
+        let tabSettings = [
+            { id: 'tab1', name: '협력업체', color: '#e74c3c' },
+            { id: 'tab2', name: '자동문 업체', color: '#3498db' },
+            { id: 'tab3', name: '어닝 업체', color: '#2ecc71' },
+            { id: 'tab4', name: '블라인드 업체', color: '#f39c12' }
+        ];
+
+        let vendors = {};
+        let currentTabId = 'tab1';
         let editingVendorId = null;
-
-        const typeNames = {
-            cooperation: '협력업체',
-            autodoor: '자동문 업체',
-            awning: '어닝 업체',
-            blind: '블라인드 업체'
-        };
-
-        // 필터 초기화
-        function resetFilter() {
-            document.getElementById('searchInput').value = '';
-            updateVendorList();
-        }
-
-        // 로컬 스토리지에서 데이터 로드
-        function loadData() {
-            const saved = localStorage.getItem('daisoVendors');
-            if (saved) {
-                vendors = JSON.parse(saved);
-            }
-        }
-
-        // 로컬 스토리지에 데이터 저장
-        function saveData() {
-            localStorage.setItem('daisoVendors', JSON.stringify(vendors));
-        }
+        let editingTabId = null;
+        let selectedColor = '#e74c3c';
 
         // 초기화
         function init() {
             loadData();
+            renderTabs();
             updateVendorList();
         }
 
+        // 데이터 로드
+        function loadData() {
+            const savedTabs = localStorage.getItem('tabSettings');
+            const savedVendors = localStorage.getItem('vendors');
+            
+            if (savedTabs) {
+                tabSettings = JSON.parse(savedTabs);
+            }
+            
+            if (savedVendors) {
+                vendors = JSON.parse(savedVendors);
+            } else {
+                // 기존 탭들에 대한 빈 배열 초기화
+                tabSettings.forEach(tab => {
+                    if (!vendors[tab.id]) {
+                        vendors[tab.id] = [];
+                    }
+                });
+            }
+        }
+
+        // 데이터 저장
+        function saveData() {
+            localStorage.setItem('tabSettings', JSON.stringify(tabSettings));
+            localStorage.setItem('vendors', JSON.stringify(vendors));
+        }
+
+        // 탭 렌더링
+        function renderTabs() {
+            const container = document.getElementById('tabsContainer');
+            container.innerHTML = tabSettings.map(tab => `
+                <button class="tab ${currentTabId === tab.id ? 'active' : ''}" 
+                        data-id="${tab.id}"
+                        style="background: ${currentTabId === tab.id ? tab.color : '#e0e0e0'};"
+                        onclick="switchTab('${tab.id}')">
+                    ${tab.name}
+                </button>
+            `).join('');
+            
+            updateListTitle();
+        }
+
         // 탭 전환
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                currentType = this.dataset.type;
-                updateVendorList();
-                document.getElementById('listTitle').textContent = typeNames[currentType] + ' 목록';
-            });
-        });
+        function switchTab(tabId) {
+            currentTabId = tabId;
+            renderTabs();
+            updateVendorList();
+        }
+
+        // 리스트 제목 업데이트
+        function updateListTitle() {
+            const currentTab = tabSettings.find(t => t.id === currentTabId);
+            document.getElementById('listTitle').textContent = currentTab ? currentTab.name + ' 목록' : '업체 목록';
+        }
 
         // 업체 목록 업데이트
         function updateVendorList(filtered = null) {
             const container = document.getElementById('vendorListContainer');
-            let currentVendors = filtered !== null ? filtered : vendors[currentType];
+            let currentVendors = filtered !== null ? filtered : (vendors[currentTabId] || []);
             
             document.getElementById('vendorCount').textContent = currentVendors.length + '개';
 
@@ -533,6 +689,157 @@
             `).join('');
         }
 
+        // 설정 모달 열기
+        function openSettingsModal() {
+            renderTabSettings();
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        // 설정 모달 닫기
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // 탭 설정 렌더링
+        function renderTabSettings() {
+            const container = document.getElementById('tabSettingsList');
+            container.innerHTML = tabSettings.map(tab => `
+                <div class="tab-item">
+                    <div class="tab-item-info">
+                        <div class="tab-item-name">
+                            <span class="tab-item-color" style="background: ${tab.color};"></span>
+                            ${tab.name}
+                        </div>
+                    </div>
+                    <div class="tab-item-actions">
+                        <button class="btn-edit-small" onclick="editTab('${tab.id}')">수정</button>
+                        ${tabSettings.length > 1 ? `<button class="btn-delete-small" onclick="confirmDeleteTab('${tab.id}')">삭제</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 탭 모달 열기 (새 탭)
+        function openTabModal() {
+            editingTabId = null;
+            selectedColor = colorPalette[0];
+            document.getElementById('tabModalTitle').textContent = '탭 추가';
+            document.getElementById('tabName').value = '';
+            document.getElementById('deleteTabBtn').style.display = 'none';
+            renderColorPicker();
+            document.getElementById('tabModal').classList.add('active');
+        }
+
+        // 탭 수정
+        function editTab(tabId) {
+            const tab = tabSettings.find(t => t.id === tabId);
+            if (!tab) return;
+
+            editingTabId = tabId;
+            selectedColor = tab.color;
+            document.getElementById('tabModalTitle').textContent = '탭 수정';
+            document.getElementById('tabName').value = tab.name;
+            document.getElementById('deleteTabBtn').style.display = tabSettings.length > 1 ? 'block' : 'none';
+            renderColorPicker();
+            document.getElementById('tabModal').classList.add('active');
+        }
+
+        // 탭 모달 닫기
+        function closeTabModal() {
+            document.getElementById('tabModal').classList.remove('active');
+        }
+
+        // 색상 선택기 렌더링
+        function renderColorPicker() {
+            const container = document.getElementById('colorPicker');
+            container.innerHTML = colorPalette.map(color => `
+                <div class="color-option ${selectedColor === color ? 'selected' : ''}" 
+                     style="background: ${color};"
+                     onclick="selectColor('${color}')">
+                </div>
+            `).join('');
+        }
+
+        // 색상 선택
+        function selectColor(color) {
+            selectedColor = color;
+            renderColorPicker();
+        }
+
+        // 탭 저장
+        document.getElementById('tabForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('tabName').value.trim();
+
+            if (editingTabId) {
+                // 수정
+                const index = tabSettings.findIndex(t => t.id === editingTabId);
+                tabSettings[index].name = name;
+                tabSettings[index].color = selectedColor;
+            } else {
+                // 추가
+                const newTab = {
+                    id: 'tab' + Date.now(),
+                    name: name,
+                    color: selectedColor
+                };
+                tabSettings.push(newTab);
+                vendors[newTab.id] = [];
+            }
+
+            saveData();
+            renderTabs();
+            renderTabSettings();
+            closeTabModal();
+            alert('저장되었습니다!');
+        });
+
+        // 탭 삭제 확인
+        function confirmDeleteTab(tabId) {
+            const tab = tabSettings.find(t => t.id === tabId);
+            const vendorCount = vendors[tabId] ? vendors[tabId].length : 0;
+            
+            if (vendorCount > 0) {
+                if (!confirm(`${tab.name} 탭에 ${vendorCount}개의 업체가 있습니다.\n탭을 삭제하면 모든 업체 데이터도 삭제됩니다.\n정말 삭제하시겠습니까?`)) {
+                    return;
+                }
+            } else {
+                if (!confirm(`${tab.name} 탭을 삭제하시겠습니까?`)) {
+                    return;
+                }
+            }
+
+            deleteTabConfirmed(tabId);
+        }
+
+        // 탭 삭제 (모달에서)
+        function deleteTab() {
+            confirmDeleteTab(editingTabId);
+            closeTabModal();
+        }
+
+        // 탭 삭제 실행
+        function deleteTabConfirmed(tabId) {
+            tabSettings = tabSettings.filter(t => t.id !== tabId);
+            delete vendors[tabId];
+            
+            if (currentTabId === tabId) {
+                currentTabId = tabSettings[0].id;
+            }
+
+            saveData();
+            renderTabs();
+            renderTabSettings();
+            updateVendorList();
+        }
+
+        // 필터 초기화
+        function resetFilter() {
+            document.getElementById('searchInput').value = '';
+            updateVendorList();
+        }
+
         // 업체 추가 모달 열기
         function openAddModal() {
             editingVendorId = null;
@@ -544,7 +851,7 @@
 
         // 업체 수정
         function editVendor(id) {
-            const vendor = vendors[currentType].find(v => v.id === id);
+            const vendor = vendors[currentTabId].find(v => v.id === id);
             if (!vendor) return;
 
             editingVendorId = id;
@@ -577,11 +884,15 @@
                 memo: document.getElementById('vendorMemo').value.trim()
             };
 
+            if (!vendors[currentTabId]) {
+                vendors[currentTabId] = [];
+            }
+
             if (editingVendorId) {
-                const index = vendors[currentType].findIndex(v => v.id === editingVendorId);
-                vendors[currentType][index] = vendor;
+                const index = vendors[currentTabId].findIndex(v => v.id === editingVendorId);
+                vendors[currentTabId][index] = vendor;
             } else {
-                vendors[currentType].push(vendor);
+                vendors[currentTabId].push(vendor);
             }
 
             saveData();
@@ -595,7 +906,7 @@
             if (!editingVendorId) return;
             if (!confirm('정말 삭제하시겠습니까?')) return;
 
-            vendors[currentType] = vendors[currentType].filter(v => v.id !== editingVendorId);
+            vendors[currentTabId] = vendors[currentTabId].filter(v => v.id !== editingVendorId);
             saveData();
             updateVendorList();
             closeModal();
@@ -604,7 +915,7 @@
         function confirmDelete(id) {
             if (!confirm('정말 삭제하시겠습니까?')) return;
             
-            vendors[currentType] = vendors[currentType].filter(v => v.id !== id);
+            vendors[currentTabId] = vendors[currentTabId].filter(v => v.id !== id);
             saveData();
             updateVendorList();
         }
@@ -618,7 +929,7 @@
                 return;
             }
 
-            const filtered = vendors[currentType].filter(vendor => {
+            const filtered = vendors[currentTabId].filter(vendor => {
                 return vendor.name.toLowerCase().includes(searchTerm) ||
                        vendor.address.toLowerCase().includes(searchTerm) ||
                        (vendor.region && vendor.region.toLowerCase().includes(searchTerm));
@@ -629,12 +940,13 @@
 
         // 엑셀 내보내기
         function exportToExcel() {
-            const currentVendors = vendors[currentType];
+            const currentVendors = vendors[currentTabId] || [];
             if (currentVendors.length === 0) {
                 alert('내보낼 데이터가 없습니다.');
                 return;
             }
 
+            const currentTab = tabSettings.find(t => t.id === currentTabId);
             let csv = '업체명,전화번호,주소,담당지역,메모\n';
             currentVendors.forEach(vendor => {
                 csv += `"${vendor.name}","${vendor.phone}","${vendor.address}","${vendor.region || ''}","${vendor.memo || ''}"\n`;
@@ -643,7 +955,7 @@
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `${typeNames[currentType]}_${new Date().toISOString().split('T')[0]}.csv`;
+            link.download = `${currentTab.name}_${new Date().toISOString().split('T')[0]}.csv`;
             link.click();
             
             alert(`${currentVendors.length}개 업체를 내보냈습니다!`);
@@ -712,11 +1024,15 @@
                 return;
             }
 
+            if (!vendors[currentTabId]) {
+                vendors[currentTabId] = [];
+            }
+
             let added = 0;
             let duplicates = 0;
 
             vendorsToAdd.forEach(vendorData => {
-                const exists = vendors[currentType].some(v => 
+                const exists = vendors[currentTabId].some(v => 
                     v.name === vendorData.name && v.phone === vendorData.phone
                 );
 
@@ -729,7 +1045,7 @@
                         region: vendorData.region,
                         memo: vendorData.memo
                     };
-                    vendors[currentType].push(vendor);
+                    vendors[currentTabId].push(vendor);
                     added++;
                 } else {
                     duplicates++;
@@ -765,8 +1081,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            // 설치 안내 배너 표시
             showInstallBanner();
         });
 
@@ -808,12 +1122,10 @@
                     deferredPrompt = null;
                 });
             }
-            // 배너 제거
             const banner = document.querySelector('div[style*="position: fixed"]');
             if (banner) banner.remove();
         }
 
-        // 앱 설치 완료 후
         window.addEventListener('appinstalled', () => {
             console.log('PWA 설치 완료');
             deferredPrompt = null;
